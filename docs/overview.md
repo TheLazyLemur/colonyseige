@@ -1,10 +1,10 @@
-# Minimal Defensive RTS — “Hive Siege”
+# Minimal Defensive RTS — “Colony Siege”
 
 ---
 
 ## Game Concept & Vision
 
-**Elevator Pitch:** *Hive Siege* is a compact real-time strategy game where players build defenses, train a small army, and fight their way toward a fortified enemy Hive. The Hive constantly sends escalating waves of attackers, forcing the player to balance survival with gradual offense until the Hive Core is destroyed. Matches are short (10–20 minutes), tense, and focused on resource management and tactical positioning.
+**Elevator Pitch:** *Colony Siege* is a compact real-time strategy game where players build defenses, train a small army, and fight their way toward a fortified enemy Hive. The Hive constantly sends escalating waves of attackers, forcing the player to balance survival with gradual offense until the Hive Core is destroyed. Matches are short (10–20 minutes), tense, and focused on resource management and tactical positioning.
 
 **Design Pillars:**
 
