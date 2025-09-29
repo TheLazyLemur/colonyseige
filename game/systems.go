@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"ecs"
+	"colonyseige/internal/ecs"
 )
 
 var (

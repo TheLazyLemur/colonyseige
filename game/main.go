@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"ecs"
+	"colonyseige/internal/ecs"
 )
 
 func main() {
