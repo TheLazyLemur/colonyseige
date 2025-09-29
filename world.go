@@ -11,7 +11,6 @@ type World struct {
 	entityIndex    map[EntityId]int
 	componentStore *ComponentStore
 	systems        []System
-	systemFilters  []*Filter
 	systemsCache   atomic.Pointer[[]System]
 	mutex          sync.RWMutex
 }
@@ -22,7 +21,6 @@ func NewWorld() *World {
 		entityIndex:    make(map[EntityId]int),
 		componentStore: NewComponentStore(),
 		systems:        make([]System, 0),
-		systemFilters:  make([]*Filter, 0),
 	}
 }
 
@@ -95,11 +93,8 @@ func (w *World) IterateEntityComponents(entity Entity, fn func(ComponentId, Comp
 }
 
 func (w *World) AddSystem(system System) {
-	filter := NewFilter(system.RequiredComponents()...)
-
 	w.mutex.Lock()
 	w.systems = append(w.systems, system)
-	w.systemFilters = append(w.systemFilters, filter)
 	w.refreshSystemsCacheLocked()
 	w.mutex.Unlock()
 }
@@ -135,21 +130,29 @@ func (w *World) Update(deltaTime float64) {
 }
 
 func (w *World) QueryEntities(componentTypes ...reflect.Type) []Entity {
-	filter := NewFilter(componentTypes...)
-	return w.FilterEntities(filter)
+	return w.FilterEntities(NewFilter(componentTypes...))
 }
 
 func (w *World) FilterEntities(filter *Filter) []Entity {
+	if len(filter.requiredComponents) == 0 {
+		w.mutex.RLock()
+		entities := append([]Entity(nil), w.entities...)
+		w.mutex.RUnlock()
+		return entities
+	}
+
+	ids := w.componentStore.EntitiesWithAll(filter.requiredComponents)
+	if len(ids) == 0 {
+		return []Entity{}
+	}
+
 	w.mutex.RLock()
-	entities := make([]Entity, len(w.entities))
-	copy(entities, w.entities)
-	w.mutex.RUnlock()
+	defer w.mutex.RUnlock()
 
-	filtered := make([]Entity, 0, len(entities))
-
-	for _, entity := range entities {
-		if filter.Matches(entity.Id, w.componentStore) {
-			filtered = append(filtered, entity)
+	filtered := make([]Entity, 0, len(ids))
+	for _, id := range ids {
+		if index, exists := w.entityIndex[id]; exists {
+			filtered = append(filtered, w.entities[index])
 		}
 	}
 

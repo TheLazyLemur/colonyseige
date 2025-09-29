@@ -37,7 +37,7 @@ func main() {
 		if i == 10 {
 			player2 := world.CreateEntity()
 			world.AddComponent(player2, Position{X: 0, Y: 0})
-			world.AddComponent(player2, Velocity{X: 10, Y: 5})
+			world.AddComponent(player2, Velocity{X: 0, Y: 20})
 			world.AddComponent(player2, Health{Current: 100, Max: 100})
 		}
 
